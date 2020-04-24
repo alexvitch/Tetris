@@ -1,4 +1,4 @@
-export default class me {
+export default class Game {
     score = 0;
     lines = 0;
     level = 0;
@@ -37,15 +37,15 @@ export default class me {
     movePieceLeft() {
         this.activePiece.x -= 1;
 
-        if (this.isOutOfBorder()) {
-            this.activePiece.x += 1;  //isOutOfBorder method usage
+        if (this.hasCollision()) {
+            this.activePiece.x += 1;  //isOutOfBorder method usage returning block on previous position on playfield's bounds
         }
     }
 
     movePieceRight() {
         this.activePiece.x += 1;
 
-        if (this.isOutOfBorder()) {
+        if (this.hasCollision()) {
             this.activePiece.x -= 1;  //isOutOfBorder method usage
         }
     }
@@ -53,16 +53,27 @@ export default class me {
     movePieceDown() {
         this.activePiece.y += 1;
 
-        if (this.isOutOfBorder()) {
+        if (this.hasCollision()) {
             this.activePiece.y -= 1;  //isOutOfBorder method usage
+            this.pieceLocking();
         }
     }
 
-    isOutOfBorder() {
-        const playfield = this.playfield;       //destructing assignment
-        const { y, x } = this.activePiece;
+    hasCollision() {
+        const { y: pieceY, x: pieceX, blocks} = this.activePiece;   //transfering blocks properties to the playfield
+        for (let y = 0; y < blocks.length; y++) {
+            for (let x = 0; x < blocks[y].length; x++) {
+                if (
+                    blocks[y][x] && 
+                    ((this.playfield[pieceY + y] === undefined || this.playfield[pieceY + y][pieceX + x] === undefined) || //whether is on border: at first y-line, then y-line + x-line
+                    this.playfield[pieceY + y][pieceX + x])
+                    ) { 
+                    return true;
+                }                
+            }                        
+        }
         
-        return playfield[y] === undefined || playfield[y][x] === undefined; //whether is on border
+        return false; 
     }
 
     pieceLocking() {
@@ -70,7 +81,9 @@ export default class me {
 
         for (let y = 0; y < blocks.length; y++) {
             for (let x = 0; x < blocks[y].length; x++) {
-                this.playfield[pieceY + y][pieceX + x] = blocks[y][x];    //transfering blocks properties to the playfield            
+                if (blocks[y][x]) {
+                    this.playfield[pieceY + y][pieceX + x] = blocks[y][x];  //transfering blocks properties to the playfield 
+                }             
             }                        
         }
     }
