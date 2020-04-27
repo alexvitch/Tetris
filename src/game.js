@@ -75,7 +75,7 @@ export default class Game {
             }            
         }
 
-        this.activePiece.blocks = temp;               // assigning temporary array to blocks array
+        this.activePiece.blocks = temp;               // assigning temporary array to block's array
 
         if(this.hasCollision()) {
             this.activePiece.blocks = blocks;        //rotating piece in backwards
