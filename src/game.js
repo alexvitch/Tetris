@@ -7,7 +7,7 @@ export default class Game {
     };
 
     score = 0;
-    lines = 19;
+    lines = 0;
     playfield = this.createPlayfield();
     activePiece = this.createPiece();
     nextPiece = this.createPiece();
@@ -39,6 +39,10 @@ export default class Game {
         }
 
         return {
+            score: this.score,
+            level: this.level,
+            lines: this.lines,
+            nextPiece: this.nextPiece,
             playfield
         };
     }
@@ -239,6 +243,7 @@ export default class Game {
         if(clearedLines > 0) {
             this.score += Game.points[clearedLines] * (this.level + 1);
             this.lines += clearedLines;
+            console.log(this.score)
         }
     }
 
